@@ -1,3 +1,35 @@
+// Result UI
+const body = document.querySelector('body');
+const buttons = document.querySelectorAll('button');
+const result =  document.querySelector('.result');
+const humanContainer = document.querySelector('.human');
+const computerContainer = document.querySelector('.computer');
+
+// Game end UI
+const gameEndContainer = document.createElement('div');
+const gameWinner = document.createElement('div');
+const resetButton = document.createElement('button');
+
+// Styling for game end UI
+gameEndContainer.appendChild(gameWinner);
+gameEndContainer.appendChild(resetButton);
+gameEndContainer.style.display = 'flex';
+gameEndContainer.style.flexDirection = 'column';
+gameEndContainer.style.alignItems = 'center';
+gameEndContainer.style.justifyContent = 'center';
+gameEndContainer.style.textAlign = 'center';
+gameEndContainer.style.gap = '16px';
+gameWinner.style.fontSize = '56px';
+gameWinner.style.fontWeight = '100';
+resetButton.style.fontFamily = 'system-ui, -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Oxygen, Ubuntu, Cantarell, \'Open Sans\', \'Helvetica Neue\', sans-serif';
+resetButton.textContent = 'Play Again?';
+resetButton.addEventListener('click', () => location.reload());
+resetButton.style.width = 'auto';
+
+// Results
+let humanResult = 0;
+let computerResult = 0;
+
 function getComputerChoice () {
     randInt = Math.floor(Math.random() * 4);
     switch (randInt) {
@@ -127,23 +159,6 @@ function ScissorsHelper (computerSelection) {
     }
 }
 
-const body = document.querySelector('body');
-const buttons = document.querySelectorAll('button');
-const result =  document.querySelector('.result');
-const humanContainer = document.querySelector('.human');
-const computerContainer = document.querySelector('.computer');
-
-const gameEndContainer = document.createElement('div');
-const gameWinner = document.createElement('div');
-const resetButton = document.createElement('button');
-gameEndContainer.appendChild(gameWinner);
-gameEndContainer.appendChild(resetButton);
-resetButton.textContent = 'Play Again?';
-resetButton.addEventListener('click', () => location.reload());
-
-let humanResult = 0;
-let computerResult = 0;
-
 buttons.forEach((button) => {
     button.addEventListener('click', () => {
         roundResult = playRound(button.textContent, getComputerChoice());
@@ -158,16 +173,16 @@ buttons.forEach((button) => {
         result.textContent = roundResult;
         if ((humanResult === 5) || (computerResult === 5)) {
             gameWinner.textContent = announceWinner(humanResult, computerResult);
+            removeAllElements();
             body.appendChild(gameEndContainer);
-            removeButtons();
+            body.style.flexDirection = 'row';
+            body.style.justifyContent = 'center';
         }
     })
 })
 
-function removeButtons () {
-    for (const b of buttons) {
-        b.remove();
-    }
+function removeAllElements () {
+    document.body.innerHTML = "";
 }
 
 function announceWinner (human, computer) {

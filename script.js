@@ -1,5 +1,3 @@
-const VALID_OPTIONS = [`Rock`, `Paper`, `Scissors`, `Lizard`, `Spock`];
-
 function getComputerChoice () {
     randInt = Math.floor(Math.random() * 4);
     switch (randInt) {
@@ -129,38 +127,47 @@ function ScissorsHelper (computerSelection) {
     }
 }
 
-function game () {
-    let human = 0,
-        computer = 0
-        playerSelection = null;
+const body = document.querySelector('body');
+const buttons = document.querySelectorAll('button');
+const result =  document.querySelector('.result');
+const humanContainer = document.querySelector('.human');
+const computerContainer = document.querySelector('.computer');
 
-    for (let i = 0; i < 5; i++) {
+const gameEndContainer = document.createElement('div');
+const gameWinner = document.createElement('div');
+const resetButton = document.createElement('button');
+gameEndContainer.appendChild(gameWinner);
+gameEndContainer.appendChild(resetButton);
+resetButton.textContent = 'Play Again?';
+resetButton.addEventListener('click', () => location.reload());
 
-        // User input
-        while (!VALID_OPTIONS.includes(playerSelection)) {
-            playerSelection = prompt(`Your turn: `).toLowerCase();
-            playerSelection = capitalizeFirstLetter(playerSelection);
-        }
+let humanResult = 0;
+let computerResult = 0;
 
-        // Displays and saves result
-        roundResult = playRound(playerSelection, getComputerChoice());
-        console.log(roundResult);
+buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+        roundResult = playRound(button.textContent, getComputerChoice());
         if (roundResult.includes(`win`)) {
-            human += 1;
+            humanResult += 1;
+            humanContainer.textContent = humanResult;
         }
         else if (roundResult.includes(`lose`)) {
-            computer += 1;
+            computerResult += 1;
+            computerContainer.textContent = computerResult;
         }
+        result.textContent = roundResult;
+        if ((humanResult === 5) || (computerResult === 5)) {
+            gameWinner.textContent = announceWinner(humanResult, computerResult);
+            body.appendChild(gameEndContainer);
+            removeButtons();
+        }
+    })
+})
 
-        // Resets playerSelection
-        playerSelection = null;
+function removeButtons () {
+    for (const b of buttons) {
+        b.remove();
     }
-    console.log(announceWinner(human, computer));
-    console.log(`Human: ${human} --- Computer: ${computer}`);
-}
-
-function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 function announceWinner (human, computer) {
